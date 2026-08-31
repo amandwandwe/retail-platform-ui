@@ -3,6 +3,8 @@ import Index from "./shared/Index.jsx";
 import Authentication from "./shared/authentication/Authentication.jsx";
 import Login from "./shared/authentication/pages/Login.jsx";
 import Register from "./shared/authentication/pages/Register.jsx";
+import ForgotPassword from "./shared/authentication/pages/ForgotPassword.jsx";
+import RecoveryCodeLogin from "./shared/authentication/pages/RecoveryCodeLogin.jsx";
 
 const router = createBrowserRouter([
     {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
             {
                 path: "register",
                 element: <Register />
+            },
+            {
+                path: "forgot-password",
+                element: <ForgotPassword />
+            },
+            {
+                path: "recovery-code",
+                element: <RecoveryCodeLogin />
             }
         ],
     },
