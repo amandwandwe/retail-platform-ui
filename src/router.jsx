@@ -1,10 +1,28 @@
 import { createBrowserRouter } from "react-router-dom";
+import Index from "./shared/Index.jsx";
+import Authentication from "./shared/authentication/Authentication.jsx";
+import Login from "./shared/authentication/pages/Login.jsx";
+import Register from "./shared/authentication/pages/Register.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-4">Hello...</h1>
-    }
+        element: <Index />,
+    },
+    {
+        path: "/auth",
+        element: <Authentication />,
+        children: [
+            {
+                path: "login",
+                element: <Login />
+            },
+            {
+                path: "register",
+                element: <Register />
+            }
+        ],
+    },
 ]);
 
 export default router;
