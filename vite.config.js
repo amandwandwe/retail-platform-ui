@@ -7,4 +7,15 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    server: {
+        port: 5173,
+        proxy: {
+            "/api/iam": {
+                target: "http://localhost:5073",
+                changeOrigin: true,
+                rewrite: (path) =>
+                    path.replace(/^\/api\/iam/, ""),
+            },
+        },
+    },
 });

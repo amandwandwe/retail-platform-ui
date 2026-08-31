@@ -16,7 +16,7 @@ const Register = () => {
 
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
-    const [errors, setErrors] = useState("");
+    const [errors, setErrors] = useState([]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,29 +49,42 @@ const Register = () => {
             setErrors([]);
             setSuccessMessage("");
 
-            const response = await fetch("/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
+            const response = await fetch(
+                "/api/iam/register",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                }
+            );
 
             if (!response.ok) {
-                const result = await response.json();
+                const result =
+                    await response.json();
 
                 if (result.errors) {
-                    setErrors(
-                        Array.isArray(result.errors)
-                            ? result.errors
-                            : Object.values(result.errors).flat()
-                    );
+                    const apiErrors = [];
+
+                    Object.values(
+                        result.errors
+                    ).forEach((items) => {
+                        if (Array.isArray(items)) {
+                            apiErrors.push(...items);
+                        }
+                    });
+
+                    setErrors(apiErrors);
                 } else {
                     setErrors([
-                        result.message || "Registration failed.",
+                        result.title ||
+                        result.message ||
+                        "Registration failed.",
                     ]);
                 }
 
@@ -100,24 +113,38 @@ const Register = () => {
 
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">
+                        Email
+                    </label>
+
                     <input
                         id="email"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) =>
+                            setEmail(
+                                e.target.value
+                            )
+                        }
                         autoComplete="email"
                         placeholder="Enter your email"
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">
+                        Password
+                    </label>
+
                     <input
                         id="password"
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) =>
+                            setPassword(
+                                e.target.value
+                            )
+                        }
                         autoComplete="new-password"
                         placeholder="Enter your password"
                     />
@@ -127,12 +154,15 @@ const Register = () => {
                     <label htmlFor="confirmPassword">
                         Confirm Password
                     </label>
+
                     <input
                         id="confirmPassword"
                         type="password"
                         value={confirmPassword}
                         onChange={(e) =>
-                            setConfirmPassword(e.target.value)
+                            setConfirmPassword(
+                                e.target.value
+                            )
                         }
                         autoComplete="new-password"
                         placeholder="Confirm your password"
@@ -140,12 +170,21 @@ const Register = () => {
                 </div>
 
                 <div style={{ marginTop: "16px" }}>
-                    <h3>Password Requirements</h3>
+                    <h3>
+                        Password Requirements
+                    </h3>
+
                     <ul>
                         {passwordRequirements.map(
                             (requirement) => (
-                                <li key={requirement}>
-                                    {requirement}
+                                <li
+                                    key={
+                                        requirement
+                                    }
+                                >
+                                    {
+                                        requirement
+                                    }
                                 </li>
                             )
                         )}
@@ -156,13 +195,27 @@ const Register = () => {
                     <div
                         style={{
                             color: "red",
-                            marginTop: "16px",
+                            marginTop:
+                                "16px",
                         }}
                     >
                         <ul>
-                            {errors.map((error, index) => (
-                                <li key={index}>{error}</li>
-                            ))}
+                            {errors.map(
+                                (
+                                    error,
+                                    index
+                                ) => (
+                                    <li
+                                        key={
+                                            index
+                                        }
+                                    >
+                                        {
+                                            error
+                                        }
+                                    </li>
+                                )
+                            )}
                         </ul>
                     </div>
                 )}
@@ -171,7 +224,8 @@ const Register = () => {
                     <div
                         style={{
                             color: "green",
-                            marginTop: "16px",
+                            marginTop:
+                                "16px",
                         }}
                     >
                         {successMessage}
@@ -181,15 +235,21 @@ const Register = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{ marginTop: "16px" }}
+                    style={{
+                        marginTop:
+                            "16px",
+                    }}
                 >
-                    {loading ? "Creating Account..." : "Register"}
+                    {loading
+                        ? "Creating Account..."
+                        : "Register"}
                 </button>
             </form>
 
             <div style={{ marginTop: "20px" }}>
                 <Link to="/auth/login">
-                    Already have an account? Login
+                    Already have an account?
+                    Login
                 </Link>
             </div>
         </div>

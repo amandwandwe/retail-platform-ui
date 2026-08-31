@@ -21,15 +21,19 @@ const ForgotPassword = () => {
         try {
             setLoading(true);
 
-            await fetch("/forgotPassword", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                }),
-            });
+            await fetch(
+                "/api/iam/forgotPassword",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        email,
+                    }),
+                }
+            );
 
             setMessage(
                 "If an account exists for this email address, a password reset link has been sent."

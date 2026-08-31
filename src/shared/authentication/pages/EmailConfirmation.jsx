@@ -14,7 +14,7 @@ const EmailConfirmation = () => {
                 const queryString = searchParams.toString();
 
                 const response = await fetch(
-                    `/confirmEmail?${queryString}`,
+                    `/api/iam/confirmEmail?${queryString}`,
                     {
                         method: "GET",
                     }
@@ -24,10 +24,20 @@ const EmailConfirmation = () => {
                     const result = await response.json();
 
                     setSuccess(false);
-                    setMessage(
-                        result.message ||
-                            "Email confirmation failed."
-                    );
+
+                    let message = "Email confirmation failed.";
+
+                    try {
+                        const result =
+                            await response.json();
+
+                        message =
+                            result.title ||
+                            result.message ||
+                            message;
+                    } catch { }
+
+                    setMessage(message);
                     return;
                 }
 

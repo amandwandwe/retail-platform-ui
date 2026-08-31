@@ -28,23 +28,26 @@ const Login = () => {
         try {
             setLoading(true);
 
-            const response = await fetch("/login", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    rememberMe,
-                }),
-            });
+            const response = await fetch(
+                "/api/iam/login?useCookies=true",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    }),
+                }
+            );
 
             if (!response.ok) {
-                const result = await response.json();
+                const text = await response.text();
+
                 throw new Error(
-                    result.message || "Invalid email or password."
+                    text || "Invalid email or password."
                 );
             }
 
@@ -67,24 +70,30 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="email">Email</label>
+
                     <input
                         id="email"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email"
+                        onChange={(e) =>
+                            setEmail(e.target.value)
+                        }
                         autoComplete="email"
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">
+                        Password
+                    </label>
+
                     <input
                         id="password"
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
+                        onChange={(e) =>
+                            setPassword(e.target.value)
+                        }
                         autoComplete="current-password"
                     />
                 </div>
@@ -94,8 +103,13 @@ const Login = () => {
                         <input
                             type="checkbox"
                             checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
+                            onChange={(e) =>
+                                setRememberMe(
+                                    e.target.checked
+                                )
+                            }
                         />
+
                         Remember Me
                     </label>
                 </div>
@@ -114,9 +128,10 @@ const Login = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{ marginTop: "16px" }}
                 >
-                    {loading ? "Signing In..." : "Login"}
+                    {loading
+                        ? "Signing In..."
+                        : "Login"}
                 </button>
             </form>
 
