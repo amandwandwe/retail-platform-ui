@@ -1,19 +1,51 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  - main
 
-pool:
-  vmImage: ubuntu-latest
+stages:
+  - stage: CI
+    displayName: "Continuous Integration"
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+    jobs:
+      - job: InstallLintAndBuildNodeApp
+        displayName: "Install dependancies, Lint and Build Node Application"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+        pool:
+          vmImage: ubuntu-latest
+
+        steps:
+          - task: UseNode@1
+            inputs:
+              version: 22.x
+            displayName: "Use Node.js Ecosystem"
+
+          - task: Npm@1
+            inputs:
+              command: install
+            displayName: "Install Dependancies"
+
+          - task: Npm@1
+            inputs:
+              customCommand: run lint
+            displayName: "Run Linter"
+
+          - task: Npm@1
+            inputs:
+              customCommand: run build
+            displayName: "Build Application"
+
+      - job: DockerBuildAndPush
+        displayName: "Build and Push Docker Image"
+
+        pool:
+          vmImage: ubuntu-latest
+
+        steps:
+          - task: Docker@2
+            inputs:
+              command: buildAndPush
+              Dockerfile: ./Dockerfile
+              repository: amandwandwe/retail-platform-ui
+              containerRegistry: Docker Hub (amandwandwe)
+              tags: |
+                latest
+            displayName: "Build and Push the Image to Docker Hub"
