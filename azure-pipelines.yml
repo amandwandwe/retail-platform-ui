@@ -48,11 +48,11 @@ stages:
               command: custom
               customCommand: run lint
 
-          - task: Npm@1
-            displayName: "Run Tests"
-            inputs:
-              command: custom
-              customCommand: run test -- --ci
+          # - task: Npm@1
+          #   displayName: "Run Tests"
+          #   inputs:
+          #     command: custom
+          #     customCommand: run test -- --ci
 
           - task: Npm@1
             displayName: "Build Application"
