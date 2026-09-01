@@ -21,8 +21,6 @@ const EmailConfirmation = () => {
                 );
 
                 if (!response.ok) {
-                    const result = await response.json();
-
                     setSuccess(false);
 
                     let message = "Email confirmation failed.";
@@ -35,7 +33,9 @@ const EmailConfirmation = () => {
                             result.title ||
                             result.message ||
                             message;
-                    } catch { }
+                    } catch {
+                        // Ignore JSON parsing failures and keep the fallback message.
+                    }
 
                     setMessage(message);
                     return;
