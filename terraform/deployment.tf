@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "app" {
+resource "kubernetes_namespace_v1" "app" {
   metadata {
     name = var.namespace
     labels = {
@@ -7,10 +7,10 @@ resource "kubernetes_namespace" "app" {
   }
 }
 
-resource "kubernetes_deployment" "app" {
+resource "kubernetes_deployment_v1" "app" {
   metadata {
     name      = var.app_name
-    namespace = kubernetes_namespace.app.metadata[0].name
+    namespace = kubernetes_namespace_v1.app.metadata[0].name
     labels = {
       app = var.app_name
     }
@@ -34,8 +34,8 @@ resource "kubernetes_deployment" "app" {
 
       spec {
         container {
-          name  = var.app_name
-          image = var.image
+          name              = var.app_name
+          image             = var.image
           image_pull_policy = "IfNotPresent"
 
           port {

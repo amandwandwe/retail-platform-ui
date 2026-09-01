@@ -1,0 +1,32 @@
+# Local .terraform directories (contains plugins, providers, and modules)
+**/.terraform/*
+
+# .tfstate files contain the current state of your infrastructure.
+# They can contain sensitive data (passwords, keys) and should be stored in a remote backend, not Git.
+*.tfstate
+*.tfstate.*
+
+# Crash log files (generated if Terraform crashes)
+crash.log
+crash.*.log
+
+# Exclude all variable files which typically contain sensitive secrets
+*.tfvars
+*.tfvars.json
+
+# Exclude override files as they are meant for local testing modifications
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include micro-architecture/CLI configurations
+.terraformrc
+terraform.rc
+
+# Exclude plan files generated locally via `terraform plan -out=tfplan`
+*.tfplan
+
+# Custom
+
+.terraform.lock.hcl

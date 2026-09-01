@@ -83,5 +83,5 @@ stages:
 
                 - bash: |
                     cd ./terraform/
-                    echo "terraform apply plan.tfplan"
+                    terraform apply plan.tfplan
                   displayName: "Apply Terraform"
