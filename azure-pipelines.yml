@@ -53,11 +53,11 @@ stages:
   - stage: CD
     displayName: "Continuous Deployment"
 
+    dependsOn: CI
+
     jobs:
       - deployment: DeployToK8S
         displayName: "Deploy to Kubernetes"
-
-        dependsOn: CI
 
         environment:
           name: dev
