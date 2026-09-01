@@ -1,6 +1,6 @@
 output "namespace" {
   description = "Kubernetes namespace used for the app"
-  value       = kubernetes_namespace_v1.app.metadata[0].name
+  value       = var.namespace
 }
 
 output "deployment_name" {
