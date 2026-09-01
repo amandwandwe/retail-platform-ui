@@ -68,6 +68,9 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout: self
+                  displayName: "Checkout sources"
+
                 - bash: |
                     cd ./terraform/
                     terraform init
