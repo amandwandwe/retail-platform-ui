@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retail-platform-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retail-platform-ui
+  template:
+    metadata:
+      labels:
+        app: retail-platform-ui
+    spec:
+      containers:
+      - name: retail-platform-ui
+        image: amandwandwe/retail-platform-ui:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        ports:
+        - containerPort: 80

@@ -65,11 +65,11 @@ const Login = () => {
 
     return (
         <div className="auth-container">
-            <h1>Login</h1>
+            <h2 className="auth-form-title">Login</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email</label>
+            <form onSubmit={handleSubmit} className="auth-form">
+                <div className="auth-field">
+                    <label htmlFor="email" className="auth-label">Email</label>
 
                     <input
                         id="email"
@@ -79,11 +79,13 @@ const Login = () => {
                             setEmail(e.target.value)
                         }
                         autoComplete="email"
+                        className="auth-input"
+                        placeholder="Enter your email"
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="password">
+                <div className="auth-field">
+                    <label htmlFor="password" className="auth-label">
                         Password
                     </label>
 
@@ -95,11 +97,13 @@ const Login = () => {
                             setPassword(e.target.value)
                         }
                         autoComplete="current-password"
+                        className="auth-input"
+                        placeholder="Enter your password"
                     />
                 </div>
 
-                <div>
-                    <label>
+                <div className="auth-checkbox-row">
+                    <label className="auth-checkbox-label">
                         <input
                             type="checkbox"
                             checked={rememberMe}
@@ -110,17 +114,12 @@ const Login = () => {
                             }
                         />
 
-                        Remember Me
+                        <span>Remember Me</span>
                     </label>
                 </div>
 
                 {error && (
-                    <div
-                        style={{
-                            color: "red",
-                            marginTop: "10px",
-                        }}
-                    >
+                    <div className="auth-message auth-message--error">
                         {error}
                     </div>
                 )}
@@ -128,6 +127,7 @@ const Login = () => {
                 <button
                     type="submit"
                     disabled={loading}
+                    className="auth-submit"
                 >
                     {loading
                         ? "Signing In..."
@@ -135,22 +135,22 @@ const Login = () => {
                 </button>
             </form>
 
-            <div style={{ marginTop: "20px" }}>
-                <p>
-                    <Link to="/auth/forgot-password">
+            <div className="auth-links">
+                <p className="auth-link-row">
+                    <Link to="/auth/forgot-password" className="auth-link">
                         Forgot Password?
                     </Link>
                 </p>
 
-                <p>
-                    <Link to="/auth/recovery-code">
+                <p className="auth-link-row">
+                    <Link to="/auth/recovery-code" className="auth-link">
                         Use Recovery Code
                     </Link>
                 </p>
 
-                <p>
-                    Don't have an account?{" "}
-                    <Link to="/auth/register">
+                <p className="auth-link-row auth-register-copy">
+                    Don&apos;t have an account?{" "}
+                    <Link to="/auth/register" className="auth-link auth-link--primary">
                         Register
                     </Link>
                 </p>

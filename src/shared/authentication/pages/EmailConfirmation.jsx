@@ -68,46 +68,36 @@ const EmailConfirmation = () => {
     }
 
     return (
-        <div>
-            <h1>Email Confirmation</h1>
+        <div className="auth-container auth-confirmation">
+            <h2 className="auth-form-title">Email Confirmation</h2>
 
             {success ? (
                 <>
-                    <div
-                        style={{
-                            color: "green",
-                            marginBottom: "1rem",
-                        }}
-                    >
+                    <div className="auth-message auth-message--success">
                         {message}
                     </div>
 
-                    <p>
+                    <p className="auth-subtitle">
                         Your account is now active. You can
                         sign in using your credentials.
                     </p>
 
-                    <Link to="/auth/login">
+                    <Link to="/auth/login" className="auth-link auth-link--primary">
                         Go to Login
                     </Link>
                 </>
             ) : (
                 <>
-                    <div
-                        style={{
-                            color: "red",
-                            marginBottom: "1rem",
-                        }}
-                    >
+                    <div className="auth-message auth-message--error">
                         {message}
                     </div>
 
-                    <p>
+                    <p className="auth-subtitle">
                         The confirmation link may be invalid,
                         expired, or already used.
                     </p>
 
-                    <Link to="/auth/login">
+                    <Link to="/auth/login" className="auth-link auth-link--primary">
                         Return to Login
                     </Link>
                 </>

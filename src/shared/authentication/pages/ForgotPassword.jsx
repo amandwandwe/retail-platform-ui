@@ -48,17 +48,17 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div>
-            <h1>Forgot Password</h1>
+        <div className="auth-container">
+            <h2 className="auth-form-title">Forgot Password</h2>
 
-            <p>
+            <p className="auth-subtitle">
                 Enter your email address and we will send you a
                 password reset link.
             </p>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email</label>
+            <form onSubmit={handleSubmit} className="auth-form">
+                <div className="auth-field">
+                    <label htmlFor="email" className="auth-label">Email</label>
                     <input
                         id="email"
                         type="email"
@@ -66,17 +66,18 @@ const ForgotPassword = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email address"
                         autoComplete="email"
+                        className="auth-input"
                     />
                 </div>
 
                 {error && (
-                    <div style={{ color: "red", marginTop: "1rem" }}>
+                    <div className="auth-message auth-message--error">
                         {error}
                     </div>
                 )}
 
                 {message && (
-                    <div style={{ color: "green", marginTop: "1rem" }}>
+                    <div className="auth-message auth-message--success">
                         {message}
                     </div>
                 )}
@@ -84,7 +85,7 @@ const ForgotPassword = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{ marginTop: "1rem" }}
+                    className="auth-submit"
                 >
                     {loading
                         ? "Sending Reset Link..."
@@ -92,8 +93,10 @@ const ForgotPassword = () => {
                 </button>
             </form>
 
-            <div style={{ marginTop: "1rem" }}>
-                <Link to="/auth/login">Back to Login</Link>
+            <div className="auth-links">
+                <p className="auth-link-row">
+                    <Link to="/auth/login" className="auth-link auth-link--primary">Back to Login</Link>
+                </p>
             </div>
         </div>
     );

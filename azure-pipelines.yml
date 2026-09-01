@@ -60,9 +60,9 @@ stages:
         displayName: "Deploy to Kubernetes"
 
         environment:
-          name: dev
+          name: production
           resourceType: VirtualMachine
-          tags: dev
+          tags: bunxu
 
         strategy:
           runOnce:
@@ -78,5 +78,10 @@ stages:
 
                 - bash: |
                     cd ./terraform/
-                    terraform plan
+                    terraform plan -out plan.tfplan
                   displayName: "Plan Terraform"
+
+                - bash: |
+                    cd ./terraform/
+                    echo "terraform apply plan.tfplan"
+                  displayName: "Apply Terraform"

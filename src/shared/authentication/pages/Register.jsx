@@ -109,11 +109,11 @@ const Register = () => {
 
     return (
         <div className="auth-container">
-            <h1>Create Account</h1>
+            <h2 className="auth-form-title">Create Account</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">
+            <form onSubmit={handleSubmit} className="auth-form">
+                <div className="auth-field">
+                    <label htmlFor="email" className="auth-label">
                         Email
                     </label>
 
@@ -128,11 +128,12 @@ const Register = () => {
                         }
                         autoComplete="email"
                         placeholder="Enter your email"
+                        className="auth-input"
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="password">
+                <div className="auth-field">
+                    <label htmlFor="password" className="auth-label">
                         Password
                     </label>
 
@@ -147,11 +148,12 @@ const Register = () => {
                         }
                         autoComplete="new-password"
                         placeholder="Enter your password"
+                        className="auth-input"
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="confirmPassword">
+                <div className="auth-field">
+                    <label htmlFor="confirmPassword" className="auth-label">
                         Confirm Password
                     </label>
 
@@ -166,15 +168,16 @@ const Register = () => {
                         }
                         autoComplete="new-password"
                         placeholder="Confirm your password"
+                        className="auth-input"
                     />
                 </div>
 
-                <div style={{ marginTop: "16px" }}>
-                    <h3>
+                <div className="auth-requirements">
+                    <h3 className="auth-subsection-title">
                         Password Requirements
                     </h3>
 
-                    <ul>
+                    <ul className="auth-password-list">
                         {passwordRequirements.map(
                             (requirement) => (
                                 <li
@@ -192,13 +195,7 @@ const Register = () => {
                 </div>
 
                 {errors.length > 0 && (
-                    <div
-                        style={{
-                            color: "red",
-                            marginTop:
-                                "16px",
-                        }}
-                    >
+                    <div className="auth-message auth-message--error auth-message--list">
                         <ul>
                             {errors.map(
                                 (
@@ -221,13 +218,7 @@ const Register = () => {
                 )}
 
                 {successMessage && (
-                    <div
-                        style={{
-                            color: "green",
-                            marginTop:
-                                "16px",
-                        }}
-                    >
+                    <div className="auth-message auth-message--success">
                         {successMessage}
                     </div>
                 )}
@@ -235,10 +226,7 @@ const Register = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{
-                        marginTop:
-                            "16px",
-                    }}
+                    className="auth-submit"
                 >
                     {loading
                         ? "Creating Account..."
@@ -246,11 +234,12 @@ const Register = () => {
                 </button>
             </form>
 
-            <div style={{ marginTop: "20px" }}>
-                <Link to="/auth/login">
-                    Already have an account?
-                    Login
-                </Link>
+            <div className="auth-links">
+                <p className="auth-link-row auth-register-copy">
+                    <Link to="/auth/login" className="auth-link auth-link--primary">
+                        Already have an account? Login
+                    </Link>
+                </p>
             </div>
         </div>
     );

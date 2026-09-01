@@ -53,17 +53,17 @@ const RecoveryCodeLogin = () => {
     };
 
     return (
-        <div>
-            <h1>Recovery Code Login</h1>
+        <div className="auth-container">
+            <h2 className="auth-form-title">Recovery Code Login</h2>
 
-            <p>
+            <p className="auth-subtitle">
                 Use a recovery code to sign in when your
                 authenticator application is unavailable.
             </p>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="recoveryCode">
+            <form onSubmit={handleSubmit} className="auth-form">
+                <div className="auth-field">
+                    <label htmlFor="recoveryCode" className="auth-label">
                         Recovery Code
                     </label>
                     <input
@@ -75,11 +75,12 @@ const RecoveryCodeLogin = () => {
                         }
                         placeholder="Enter recovery code"
                         autoComplete="off"
+                        className="auth-input"
                     />
                 </div>
 
                 {error && (
-                    <div style={{ color: "red", marginTop: "1rem" }}>
+                    <div className="auth-message auth-message--error">
                         {error}
                     </div>
                 )}
@@ -87,7 +88,7 @@ const RecoveryCodeLogin = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{ marginTop: "1rem" }}
+                    className="auth-submit"
                 >
                     {loading
                         ? "Signing In..."
@@ -95,10 +96,12 @@ const RecoveryCodeLogin = () => {
                 </button>
             </form>
 
-            <div style={{ marginTop: "1rem" }}>
-                <Link to="/auth/login">
-                    Back to Login
-                </Link>
+            <div className="auth-links">
+                <p className="auth-link-row">
+                    <Link to="/auth/login" className="auth-link auth-link--primary">
+                        Back to Login
+                    </Link>
+                </p>
             </div>
         </div>
     );
