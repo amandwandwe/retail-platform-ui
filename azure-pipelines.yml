@@ -49,3 +49,31 @@ stages:
               tags: |
                 latest
             displayName: "Build and Push the Image to Docker Hub"
+
+  - stage: CD
+    displayName: "Continuous Deployment"
+
+    jobs:
+      - deployment: DeployToK8S
+        displayName: "Deploy to Kubernetes"
+
+        dependsOn: CI
+
+        environment:
+          name: dev
+          resourceType: VirtualMachine
+          tags: dev
+
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - bash: |
+                    cd ./terraform/
+                    terraform init
+                  displayName: "Initialize Terraform"
+
+                - bash: |
+                    cd ./terraform/
+                    terraform plan
+                  displayName: "Plan Terraform"
