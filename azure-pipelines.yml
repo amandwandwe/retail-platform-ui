@@ -1,63 +1,109 @@
 trigger:
-  - main
+  branches:
+    include:
+      - main
+
+variables:
+  nodeVersion: "22.x"
+  imageRepository: "amandwandwe/retail-platform-ui"
+  dockerRegistryServiceConnection: "Docker Hub (amandwandwe)"
+  npm_config_cache: $(Pipeline.Workspace)/.npm
 
 stages:
   - stage: CI
     displayName: "Continuous Integration"
 
     jobs:
-      - job: InstallLintAndBuildNodeApp
-        displayName: "Install dependancies, Lint and Build Node Application"
+      - job: BuildAndTest
+        displayName: "Install, Lint, Test and Build"
 
         pool:
           vmImage: ubuntu-latest
 
         steps:
+          - checkout: self
+
           - task: UseNode@1
+            displayName: "Use Node.js $(nodeVersion)"
             inputs:
-              version: 22.x
-            displayName: "Use Node.js Ecosystem"
+              version: $(nodeVersion)
+
+          - task: Cache@2
+            displayName: "Restore NPM Cache"
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: $(Pipeline.Workspace)/.npm
 
           - task: Npm@1
+            displayName: "Install Dependencies"
             inputs:
-              command: install
-            displayName: "Install Dependancies"
+              command: custom
+              customCommand: ci
 
           - task: Npm@1
-            inputs:
-              customCommand: run lint
             displayName: "Run Linter"
+            inputs:
+              command: custom
+              customCommand: run lint
 
           - task: Npm@1
+            displayName: "Run Tests"
             inputs:
-              customCommand: run build
+              command: custom
+              customCommand: run test -- --ci
+
+          - task: Npm@1
             displayName: "Build Application"
+            inputs:
+              command: custom
+              customCommand: run build
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Build Artifact"
+            inputs:
+              targetPath: dist
+              artifact: app-build
 
       - job: DockerBuildAndPush
         displayName: "Build and Push Docker Image"
+        dependsOn: BuildAndTest
+        condition: succeeded()
 
         pool:
           vmImage: ubuntu-latest
 
         steps:
+          - checkout: self
+
           - task: Docker@2
+            displayName: "Build and Push Image"
             inputs:
               command: buildAndPush
+              repository: $(imageRepository)
+              containerRegistry: $(dockerRegistryServiceConnection)
               Dockerfile: ./Dockerfile
-              repository: amandwandwe/retail-platform-ui
-              containerRegistry: Docker Hub (amandwandwe)
               tags: |
                 latest
-            displayName: "Build and Push the Image to Docker Hub"
+                $(Build.BuildId)
 
   - stage: CD
     displayName: "Continuous Deployment"
-
     dependsOn: CI
+
+    condition: |
+      and(
+        succeeded(),
+        ne(variables['Build.Reason'], 'PullRequest')
+      )
 
     jobs:
       - deployment: DeployToK8S
         displayName: "Deploy to Kubernetes"
+
+        pool:
+          vmImage: ubuntu-latest
 
         environment:
           name: production
@@ -69,19 +115,66 @@ stages:
             deploy:
               steps:
                 - checkout: self
-                  displayName: "Checkout sources"
+                  displayName: "Checkout Source"
 
                 - bash: |
-                    cd ./terraform/
-                    terraform init
-                  displayName: "Initialize Terraform"
+                    cd terraform
+
+                    terraform fmt -check
+                    terraform validate
+                  displayName: "Validate Terraform"
 
                 - bash: |
-                    cd ./terraform/
-                    terraform plan -out plan.tfplan
-                  displayName: "Plan Terraform"
+                    cd terraform
+
+                    export NAMESPACE="${NAMESPACE:-retail-platform}"
+                    export APP_NAME="${APP_NAME:-retail-platform-ui}"
+                    export SVC_NAME="${APP_NAME}-svc"
+
+                    kubectl create namespace "$NAMESPACE" \
+                      --dry-run=client -o yaml | kubectl apply -f -
+
+                    terraform init -input=false
+
+                    if ! terraform state list | grep -q '^kubernetes_deployment_v1.app$'; then
+                      if kubectl -n "$NAMESPACE" get deployment "$APP_NAME" >/dev/null 2>&1; then
+                        terraform import \
+                          -input=false \
+                          kubernetes_deployment_v1.app \
+                          "$NAMESPACE/$APP_NAME" || true
+                      fi
+                    fi
+
+                    if ! terraform state list | grep -q '^kubernetes_service_v1.app$'; then
+                      if kubectl -n "$NAMESPACE" get svc "$SVC_NAME" >/dev/null 2>&1; then
+                        terraform import \
+                          -input=false \
+                          kubernetes_service_v1.app \
+                          "$NAMESPACE/$SVC_NAME" || true
+                      fi
+                    fi
+                  displayName: "Import Existing Resources"
 
                 - bash: |
-                    cd ./terraform/
-                    terraform apply plan.tfplan
-                  displayName: "Apply Terraform"
+                    cd terraform
+
+                    terraform plan \
+                      -input=false \
+                      -out=plan.tfplan \
+                      -var="image_repository=$(imageRepository)" \
+                      -var="image_tag=$(Build.BuildId)"
+                  displayName: "Terraform Plan"
+
+                - bash: |
+                    cd terraform
+
+                    terraform apply \
+                      -auto-approve \
+                      plan.tfplan
+                  displayName: "Terraform Apply"
+
+                - bash: |
+                    kubectl rollout status deployment/retail-platform-ui \
+                      -n retail-platform \
+                      --timeout=300s
+                  displayName: "Verify Deployment"
